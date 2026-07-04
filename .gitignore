@@ -1,0 +1,27 @@
+# Virtual Environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/uploads/
+data/processed/
+data/vectors/

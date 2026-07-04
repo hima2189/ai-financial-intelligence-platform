@@ -3,10 +3,9 @@
 Enterprise AI platform for financial document intelligence using:
 
 - FastAPI
-- OpenRouter LLM
+- OpenRouter
 - RAG
 - FAISS
-- SQLite
 - Streamlit
 - Docker
 
@@ -16,13 +15,3 @@ Enterprise AI platform for financial document intelligence using:
 - Financial Document Analysis
 - Semantic Search
 - AI Question Answering
-- Enterprise RAG Pipeline
-
-## Tech Stack
-
-- Python
-- FastAPI
-- FAISS
-- OpenRouter
-- Streamlit
-- Docker

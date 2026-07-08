@@ -13,7 +13,7 @@ SUPPORTED_EXTENSIONS = {
     ".xml",
     ".txt",
 }
-
+MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB in bytes
 # Absolute path to backend folder
 BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -39,6 +39,23 @@ def validate_extension(filename: str):
             detail="Only PDF, XML and TXT files are allowed."
         )
 
+# ======================================================
+# Size Validation Function
+# ======================================================
+def validate_file_size(file: UploadFile):
+    """
+    Validate uploaded file size.
+    """
+
+    file.file.seek(0, 2)  # Move to the end of the file
+    file_size = file.file.tell()  # Get the current position (size)
+    file.file.seek(0)  # Reset pointer for the next operation
+
+    if file_size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail="File size exceeds the maximum limit of 20 MB."
+        )
 
 # ======================================================
 # Upload Service
@@ -55,6 +72,9 @@ async def get_file_metadata(file: UploadFile):
 
     # Validate file extension
     validate_extension(file.filename)
+
+    # Validate file size
+    validate_file_size(file)
 
     # Generate unique filename
     unique_filename = f"{uuid.uuid4()}_{file.filename}"

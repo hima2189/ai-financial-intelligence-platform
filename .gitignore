@@ -25,3 +25,6 @@ Thumbs.db
 data/uploads/
 data/processed/
 data/vectors/
+
+backend/data/uploads/*
+!backend/data/uploads/.gitkeep

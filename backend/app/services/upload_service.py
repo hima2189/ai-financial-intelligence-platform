@@ -1,8 +1,8 @@
 import shutil
 import uuid
 from pathlib import Path
-
 from fastapi import HTTPException, UploadFile
+from app.services.pdf_parser_service import extract_text_from_pdf
 
 # ======================================================
 # Constants
@@ -65,7 +65,7 @@ def unique_filename(original_filename: str) -> str:
     Generate a unique filename using UUID.
     """
 
-    extension = Path(original_filename).suffix
+    extension = Path(original_filename).suffix.lower()
     unique_id = uuid.uuid4().hex
     return f"{unique_id}{extension}"
 
@@ -83,6 +83,7 @@ def save_file(file: UploadFile, destination: Path):
 # ======================================================
 # Upload Service
 # ======================================================
+
 
 async def process_upload(file: UploadFile):
 
@@ -108,10 +109,18 @@ async def process_upload(file: UploadFile):
     # Save uploaded file
     save_file(file, file_path)
 
+    # Extract text from PDF if applicable
+    extracted_text = ""
+    extension = Path(file.filename).suffix.lower()
+    if extension == ".pdf":
+        extracted_text = extract_text_from_pdf(file_path)
+
     # Return response
     return {
         "filename": file.filename,
         "saved_as": generated_filename,
         "content_type": file.content_type,
-        "location": str(file_path)
+        "location": str(file_path),
+        "text_extracted": bool(extracted_text),
+        "character_count": len(extracted_text)
     }

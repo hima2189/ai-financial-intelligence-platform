@@ -58,10 +58,33 @@ def validate_file_size(file: UploadFile):
         )
 
 # ======================================================
+# Unique Filename Generation Function
+# ======================================================
+def unique_filename(original_filename: str) -> str:
+    """
+    Generate a unique filename using UUID.
+    """
+
+    extension = Path(original_filename).suffix
+    unique_id = uuid.uuid4().hex
+    return f"{unique_id}{extension}"
+
+# ======================================================
+# Save File Function
+# ======================================================
+def save_file(file: UploadFile, destination: Path):
+    """
+    Save the uploaded file to the specified destination.
+    """
+
+    with open(destination, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+# ======================================================
 # Upload Service
 # ======================================================
 
-async def get_file_metadata(file: UploadFile):
+async def process_upload(file: UploadFile):
 
     # Check filename exists
     if not file.filename:
@@ -77,19 +100,18 @@ async def get_file_metadata(file: UploadFile):
     validate_file_size(file)
 
     # Generate unique filename
-    unique_filename = f"{uuid.uuid4()}_{file.filename}"
+    generated_filename = unique_filename(file.filename)
 
     # Full destination path
-    file_path = UPLOAD_DIR / unique_filename
+    file_path = UPLOAD_DIR / generated_filename
 
     # Save uploaded file
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    save_file(file, file_path)
 
     # Return response
     return {
         "filename": file.filename,
-        "saved_as": unique_filename,
+        "saved_as": generated_filename,
         "content_type": file.content_type,
         "location": str(file_path)
     }

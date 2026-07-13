@@ -3,6 +3,7 @@ import uuid
 from pathlib import Path
 from fastapi import HTTPException, UploadFile
 from app.services.pdf_parser_service import extract_text_from_pdf
+from app.services.text_parser_service import extract_text_from_txt
 
 # ======================================================
 # Constants
@@ -114,6 +115,8 @@ async def process_upload(file: UploadFile):
     extension = Path(file.filename).suffix.lower()
     if extension == ".pdf":
         extracted_text = extract_text_from_pdf(file_path)
+    elif extension == ".txt":
+        extracted_text = extract_text_from_txt(file_path)
 
     # Return response
     return {

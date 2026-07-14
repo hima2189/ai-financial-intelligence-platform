@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import HTTPException, UploadFile
 from app.services.pdf_parser_service import extract_text_from_pdf
 from app.services.text_parser_service import extract_text_from_txt
+from app.services.xml_parser_service import extract_text_from_xml
 
 # ======================================================
 # Constants
@@ -117,6 +118,8 @@ async def process_upload(file: UploadFile):
         extracted_text = extract_text_from_pdf(file_path)
     elif extension == ".txt":
         extracted_text = extract_text_from_txt(file_path)
+    elif extension == ".xml":
+        extracted_text = extract_text_from_xml(file_path)
 
     # Return response
     return {

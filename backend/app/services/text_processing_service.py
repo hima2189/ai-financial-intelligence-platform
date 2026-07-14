@@ -1,0 +1,27 @@
+def clean_text(text: str) -> str:
+    """
+    Clean the provided text by removing extra spaces and newlines.
+    """
+    words = text.split()
+    cleaned_text = ' '.join(words)
+    return cleaned_text
+
+
+def chunk_text(text: str, chunk_size: int = 500) -> list[str]:
+    """
+    Split text into smaller word-based chunks.
+    """
+    words = text.split()
+    chunks = []
+    current_chunk = []
+
+    for word in words:
+        current_chunk.append(word)
+        if len(current_chunk) >= chunk_size:
+            chunks.append(' '.join(current_chunk))
+            current_chunk = []
+
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+
+    return chunks

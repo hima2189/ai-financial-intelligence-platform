@@ -5,6 +5,7 @@ from fastapi import HTTPException, UploadFile
 from app.services.pdf_parser_service import extract_text_from_pdf
 from app.services.text_parser_service import extract_text_from_txt
 from app.services.xml_parser_service import extract_text_from_xml
+from app.services.text_processing_service import clean_text, chunk_text
 
 # ======================================================
 # Constants
@@ -121,6 +122,13 @@ async def process_upload(file: UploadFile):
     elif extension == ".xml":
         extracted_text = extract_text_from_xml(file_path)
 
+    # Clean extracted text
+    cleaned_text = clean_text(extracted_text)
+
+    # Split cleaned text into chunks
+    chunks = chunk_text(cleaned_text)
+
+
     # Return response
     return {
         "filename": file.filename,
@@ -128,5 +136,8 @@ async def process_upload(file: UploadFile):
         "content_type": file.content_type,
         "location": str(file_path),
         "text_extracted": bool(extracted_text),
-        "character_count": len(extracted_text)
+        "character_count": len(extracted_text),
+        "cleaned_character_count": len(cleaned_text),
+        "word_count": len(cleaned_text.split()),
+        "chunk_count": len(chunks)
     }

@@ -7,21 +7,30 @@ def clean_text(text: str) -> str:
     return cleaned_text
 
 
-def chunk_text(text: str, chunk_size: int = 500) -> list[str]:
+def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
     """
     Split text into smaller word-based chunks.
     """
+
+    if overlap >= chunk_size:
+        raise ValueError(
+            "Overlap must be smaller than chunk size."
+        )
+
     words = text.split()
     chunks = []
     current_chunk = []
+
 
     for word in words:
         current_chunk.append(word)
         if len(current_chunk) >= chunk_size:
             chunks.append(' '.join(current_chunk))
-            current_chunk = []
 
-    if current_chunk:
+            current_chunk = current_chunk[-overlap:]
+
+
+    if len(current_chunk) > overlap:
         chunks.append(' '.join(current_chunk))
 
     return chunks

@@ -7,7 +7,7 @@ def clean_text(text: str) -> str:
     return cleaned_text
 
 
-def chunk_text(text: str, chunk_size: int = 500) -> list[str]:
+def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
     """
     Split text into smaller word-based chunks.
     """
@@ -19,9 +19,26 @@ def chunk_text(text: str, chunk_size: int = 500) -> list[str]:
         current_chunk.append(word)
         if len(current_chunk) >= chunk_size:
             chunks.append(' '.join(current_chunk))
-            current_chunk = []
+            current_chunk = current_chunk[-overlap:]
+
 
     if current_chunk:
         chunks.append(' '.join(current_chunk))
 
     return chunks
+
+def create_chunk_metadata(chunks: list[str]) -> list[dict]:
+    """
+    Create metadata for each chunk.
+    """
+
+    metadata = []
+
+    for i, chunk in enumerate(chunks, start=1):
+        metadata.append({
+            "chunk_id": i,
+            "word_count": len(chunk.split()),
+            "text": chunk
+        })
+
+    return metadata

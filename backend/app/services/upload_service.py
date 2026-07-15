@@ -5,8 +5,7 @@ from fastapi import HTTPException, UploadFile
 from app.services.pdf_parser_service import extract_text_from_pdf
 from app.services.text_parser_service import extract_text_from_txt
 from app.services.xml_parser_service import extract_text_from_xml
-from app.services.text_processing_service import clean_text, chunk_text
-
+from app.services.text_processing_service import (clean_text,chunk_text,create_chunk_metadata)
 # ======================================================
 # Constants
 # ======================================================
@@ -128,6 +127,8 @@ async def process_upload(file: UploadFile):
     # Split cleaned text into chunks
     chunks = chunk_text(cleaned_text)
 
+    # Create metadata for each chunk
+    chunk_metadata = create_chunk_metadata(chunks)
 
     # Return response
     return {
@@ -139,5 +140,6 @@ async def process_upload(file: UploadFile):
         "character_count": len(extracted_text),
         "cleaned_character_count": len(cleaned_text),
         "word_count": len(cleaned_text.split()),
-        "chunk_count": len(chunks)
+        "chunk_count": len(chunks),
+        "metadata_count": len(chunk_metadata)
     }

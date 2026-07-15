@@ -34,3 +34,19 @@ def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]
         chunks.append(' '.join(current_chunk))
 
     return chunks
+
+def create_chunk_metadata(chunks: list[str]) -> list[dict]:
+    """
+    Create metadata for each chunk.
+    """
+
+    metadata = []
+
+    for i, chunk in enumerate(chunks, start=1):
+        metadata.append({
+            "chunk_id": i,
+            "word_count": len(chunk.split()),
+            "text": chunk
+        })
+
+    return metadata
